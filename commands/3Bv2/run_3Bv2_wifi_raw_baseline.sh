@@ -1,0 +1,53 @@
+#!/bin/bash
+#SBATCH --nodes=1
+#SBATCH -N 1
+#SBATCH -n 1
+#SBATCH --partition=multigpu
+#SBATCH --mem=500Gb
+#SBATCH --gres="gpu:8"
+#SBATCH --export=ALL
+#SBATCH --time=24:00:00
+echo "Start JOB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
+#module load cuda/9.0
+#module load python/2.7.15
+
+mkdir -p /home/bruno/results/3Bv2/wifi/raw/baseline/
+
+python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
+    --exp_name 3Bv2_wifi_raw_baseline \
+    --base_path /scratch/RFMLS/dec18_darpa/v3_list/raw_samples/3Bv2/wifi \
+    --stats_path /scratch/RFMLS/dec18_darpa/v3_list/raw_samples/3Bv2/wifi \
+    --save_path /home/bruno/results/3Bv2/wifi/raw/baseline/ \
+    --devices 100 \
+    --file_type pickle \
+    --model_flag baseline \
+    --slice_size 256 \
+    --batchnorm False \
+    --batch_size 16 \
+    --add_padding True \
+    --lr 0.0001 \
+    --K 16 \
+    --epochs 15 \
+    --normalize True \
+    --generator new \
+    --training_strategy big \
+    --multigpu False \
+    --id_gpu $1 \
+    --train False \
+    --test True \
+    -rsm /home/bruno/RFMLS/docker/Models/3Bv2/wifi/raw_samples/baseline/baseline_model.json \
+    -rsw /home/bruno/RFMLS/docker/Models/3Bv2/wifi/raw_samples/baseline/weights.hdf5 \
+    --cont True \
+    --patience 10 \
+    --channels 128 \
+    --fc1 256 \
+    --fc2 128 \
+    --cnn_stack 5 \
+    --dropout_flag False \
+    --early_stopping True \
+    --test_stride 1 \
+    --fc_stack 2 \
+    --decay 0.0 \
+    --shrink 1 \
+    > /home/bruno/results/3Bv2/wifi/raw/baseline/log.out \
+    2> /home/bruno/results/3Bv2/wifi/raw/baseline/log.err

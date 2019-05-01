@@ -42,7 +42,7 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --cnn_stack 5 \
     --dropout_flag False \
     --early_stopping True \
-    --test_stride 1 \
+    --test_stride 16 \
     --fc_stack 2 \
     --decay 0.0 \
     --shrink 1 \

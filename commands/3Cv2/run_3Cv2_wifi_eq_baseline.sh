@@ -22,12 +22,12 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --file_type pickle \
     --model_flag baseline \
     --slice_size 256 \
-    --batchnorm False \
+    --batchnorm True \
     --batch_size 128 \
-    --add_padding True \
-    --lr 0.0005 \
-    --K 16 \
-    --epochs 10 \
+    --add_padding False \
+    --lr 0.0001 \
+    --K 10 \
+    --epochs 25 \
     --normalize True \
     --generator new \
     --training_strategy big \
@@ -35,14 +35,14 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --id_gpu $1 \
     --train True \
     --test True \
-    --patience 10 \
+    --patience 7 \
     --channels 128 \
     --fc1 256 \
     --fc2 128 \
     --cnn_stack 5 \
     --dropout_flag False \
     --early_stopping True \
-    --test_stride 1 \
+    --test_stride 16 \
     --fc_stack 2 \
     --decay 0.0 \
     --shrink 1 \

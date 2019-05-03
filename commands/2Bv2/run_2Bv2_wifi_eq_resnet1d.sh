@@ -11,23 +11,23 @@ echo "Start JOB!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 #module load cuda/9.0
 #module load python/2.7.15
 
-mkdir -p /home/bruno/results/3Av2/wifi/raw/baseline/
+mkdir -p /home/bruno/results/2Bv2/wifi/equalized/resnet1d/
 
 python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
-    --exp_name 3Av2_wifi_raw_baseline \
-    --base_path /scratch/RFMLS/dec18_darpa/v3_list/raw_samples/3Av2/wifi/ \
-    --stats_path /scratch/RFMLS/dec18_darpa/v3_list/raw_samples/3Av2/wifi/ \
-    --save_path /home/bruno/results/3Av2/wifi/raw/baseline/ \
+    --exp_name 2Bv2_wifi_raw_resnet1d \
+    --base_path /scratch/RFMLS/dec18_darpa/v3_list/equalized/2Bv2/phy_payload_no_offsets_iq \
+    --stats_path /scratch/RFMLS/dec18_darpa/v3_list/equalized/2Bv2/phy_payload_no_offsets_iq \
+    --save_path /home/bruno/results/2Bv2/wifi/equalized/resnet1d/ \
     --devices 50 \
-    --file_type mat \
-    --model_flag  baseline\
-    --slice_size 1024 \
-    --batchnorm True \
-    --batch_size 32 \
+    --file_type pickle \
+    --model_flag  resnet1d\
+    --slice_size 256 \
+    --batchnorm False \
+    --batch_size 128 \
     --add_padding True \
     --lr 0.0001 \
     --K 10 \
-    --epochs 25 \
+    --epochs 30 \
     --normalize True \
     --generator new \
     --training_strategy big \
@@ -35,7 +35,7 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --id_gpu $1 \
     --train True \
     --test True \
-    --patience 7 \
+    --patience 5 \
     --channels 128 \
     --fc1 256 \
     --fc2 128 \
@@ -46,5 +46,5 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --fc_stack 2 \
     --decay 0.0 \
     --shrink 1 \
-    > /home/bruno/results/3Av2/wifi/raw/baseline/log.out \
-    2> /home/bruno/results/3Av2/wifi/raw/baseline/log.err
+    > /home/bruno/results/2Bv2/wifi/equalized/resnet1d/log.out \
+    2> /home/bruno/results/2Bv2/wifi/equalized/resnet1d/log.err

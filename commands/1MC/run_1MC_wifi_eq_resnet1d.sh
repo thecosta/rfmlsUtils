@@ -21,7 +21,7 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --devices 100 \
     --file_type pickle \
     --model_flag resnet1d \
-    --slice_size 256 \
+    --slice_size 128 \
     --batchnorm False \
     --batch_size 256 \
     --add_padding True \
@@ -29,8 +29,8 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     -rsw /scratch/tong/1Cv2/resnet1d_wifi_eq/weights.hdf5 \
     -rsm /scratch/tong/1Cv2/resnet1d_wifi_eq/resnet1d_model.json \
     -c True \
-    --K 10 \
-    --epochs 10 \
+    --K 16 \
+    --epochs 30 \
     --normalize True \
     --generator new \
     --training_strategy big \
@@ -38,14 +38,14 @@ python -u /home/bruno/RFMLS/train_val_framework/test_framework.py \
     --id_gpu $1 \
     --train False \
     --test True \
-    --patience 10 \
+    --patience 3 \
     --channels 128 \
     --fc1 256 \
     --fc2 128 \
     --cnn_stack 5 \
     --dropout_flag True \
     --early_stopping True \
-    --test_stride 16 \
+    --test_stride 1 \
     --fc_stack 2 \
     --decay 0.0 \
     --shrink 1 \

@@ -1,4 +1,5 @@
 import os
+import shutil
 import pickle
 import random
 import numpy as np
@@ -122,8 +123,7 @@ def create_save_stats(label_path):
 
 
 path = '/scratch/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
-dest = '/scratch/bruno/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
-
+dest_root = '/scratch/bruno/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
 
 '''
     Format of device_ids.pkl.
@@ -135,8 +135,6 @@ dest = '/scratch/bruno/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
     }
 '''
 device_ids = path + 'device_ids.pkl'
-dest_device_ids = dest + 'device_ids.pkl'
-new_device_ids = {}
 
 
 '''
@@ -149,8 +147,6 @@ new_device_ids = {}
     }
 '''
 label = path + 'label.pkl'
-dest_label = dest + 'label.pkl'
-new_label = {}
 
 
 '''
@@ -165,41 +161,49 @@ new_label = {}
     }
 '''
 partition = path + 'partition.pkl'
-dest_partition = dest + 'partition.pkl'
-new_partition = {}
 
-new_device_ids = {}
-new_label = {}
-new_partition = {}
 
-with open(device_ids, 'r') as f:
-    pkl = pickle.load(f)
-    for key in pkl:
-        if pkl[key] == 1:
-            new_device_ids[key] = pkl[key]
+for i in tqdm(range(50)):
+    new_device_ids = {}
+    new_label = {}
+    new_partition = {}
 
-with open(label, 'r') as f:
-    pkl = pickle.load(f)
-    for key in pkl:
-        if pkl[key] == new_device_ids.keys()[0]:
-            new_label[key] = pkl[key]
+    dest = dest_root + str(i) + '/'
+    dest_device_ids = dest + 'device_ids.pkl'
+    dest_label = dest + 'label.pkl'
+    dest_partition = dest + 'partition.pkl'
 
-examples = new_label.keys()
-random.shuffle(examples)
-l = len(examples)
-split = int(l * 0.8)
-train_ex = examples[:split]
-test_ex = examples[-(l-split):]
+    if not os.path.exists(dest):
+        os.makedirs(dest)
 
-new_partition = {'train': train_ex, 'test': test_ex}
+    with open(device_ids, 'r') as f:
+        pkl = pickle.load(f)
+        for key in pkl:
+            if pkl[key] == i:
+                new_device_ids[key] = pkl[key]
 
-with open(dest_device_ids, 'w') as f:
-    pickle.dump(new_device_ids, f)
+    with open(label, 'r') as f:
+        pkl = pickle.load(f)
+        for key in pkl:
+            if pkl[key] == new_device_ids.keys()[0]:
+                new_label[key] = pkl[key]
 
-with open(dest_label, 'w') as f:
-    pickle.dump(new_label, f)
+    examples = new_label.keys()
+    random.shuffle(examples)
+    l = len(examples)
+    split = int(l * 0.8)
+    train_ex = examples[:split]
+    test_ex = examples[-(l-split):]
 
-with open(dest_partition, 'w') as f:
-    pickle.dump(new_partition, f) 
+    new_partition = {'train': train_ex, 'test': test_ex}
 
-create_save_stats(dest)
+    with open(dest_device_ids, 'w') as f:
+        pickle.dump(new_device_ids, f)
+
+    with open(dest_label, 'w') as f:
+        pickle.dump(new_label, f)
+
+    with open(dest_partition, 'w') as f:
+        pickle.dump(new_partition, f) 
+
+    shutil.copy(path+'stats.pkl', dest+'stats.pkl')

@@ -180,12 +180,13 @@ for i in tqdm(range(50)):
         pkl = pickle.load(f)
         for key in pkl:
             if pkl[key] == i:
-                new_device_ids[key] = pkl[key]
+                device_id = key
+            new_device_ids[key] = pkl[key]
 
     with open(label, 'r') as f:
         pkl = pickle.load(f)
         for key in pkl:
-            if pkl[key] == new_device_ids.keys()[0]:
+            if pkl[key] == device_id:
                 new_label[key] = pkl[key]
 
     examples = new_label.keys()
@@ -206,4 +207,5 @@ for i in tqdm(range(50)):
     with open(dest_partition, 'w') as f:
         pickle.dump(new_partition, f) 
 
+    #create_save_stats(dest)
     shutil.copy(path+'stats.pkl', dest+'stats.pkl')

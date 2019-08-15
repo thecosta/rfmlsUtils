@@ -4,7 +4,7 @@ import pickle
 import numpy as np
 
 
-device_paths = glob.glob('/scratch/bruno/RFMLS/results/fir/1C/wifi/raw/baseline/firinit_ensemble_5taps_probsum/*')
+device_paths = glob.glob('/scratch/bruno/RFMLS/results/fir/1C/wifi/raw/baseline/firinit_ensemble_11taps_probsum2/*')
 
 example_acc = {}
 
@@ -12,7 +12,7 @@ firmodel_acc = []
 firmodel_acc_ensemble = {}
 
 device_acc = []
-device_acc_ensemble = {}
+device_acc_ensemble = []
 
 total_devices = 0
 correct_devices = 0
@@ -21,6 +21,12 @@ correct_devices = 0
 for device_path in device_paths:
 
     fir_models = glob.glob(device_path + '/*/1C_raw_wifi/preds.pkl')    
+    
+    ## Edit
+    #np.random.shuffle(fir_models)
+    #fir_models = [fir_models[0]]
+    ##
+
     total_device_prob = np.array([50,])
     total_device_examples = 0
     correct_device_examples = 0
@@ -71,18 +77,18 @@ for device_path in device_paths:
                                 
     d_acc = 1.0*correct_device_examples / total_device_examples
     device_acc.append((device_n, d_acc))
-
+    
     if np.argmax(total_device_prob) == device_n:
-        device_acc_ensemble[device_n] = 1
+        device_acc_ensemble.append((device_n, 1.0))
     else:
-        device_acc_ensemble[device_n] = 0
+        device_acc_ensemble.append((device_n, 0.0))
 
 
 for key in firmodel_acc_ensemble:
     firmodel_acc_ensemble[key] = 1.0*firmodel_acc_ensemble[key]/50
 
 
-# Get final results for FIR examples
+# Get final results for firmodel_acc
 tmp = []
 for n in range(total_devices):
     correct = 0
@@ -91,41 +97,77 @@ for n in range(total_devices):
         if t[0] == n:
             correct += t[1]
             total += t[2]
-    tmp.append((n, 1.0*correct/total))    
+    try:
+        tmp.append((n, 1.0*correct/total))    
+    except:
+        tmp.append((n, 0))
 firmodel_acc = tmp
-
 firmodel_acc = np.array(firmodel_acc, dtype=[('device', int), ('acc', float)])
 firmodel_acc = np.flip(np.sort(firmodel_acc, order='acc'))
+
+# Get average for device_acc
+firmodel_acc_avg = 0.0
+for t in firmodel_acc:
+    firmodel_acc_avg += t[1]
+firmodel_acc_avg = firmodel_acc_avg * 1.0 / total_devices
+
+
+# Get final results for firmodel_acc_ensemble
 order = []
 for t in firmodel_acc:
     order.append(t[0])
-    print t[1]
 
-# Get final results for FIR prob vector
 tmp = []
 for n in order:
     for t in firmodel_acc_ensemble:
         if t == n:
-            tmp.append((n, firmodel_acc_ensemble[t]))    
-
+            tmp.append((n, firmodel_acc_ensemble[t]))
 firmodel_acc_ensemble = tmp
 
+# Get average for firmodel_acc_ensemble
+firmodel_acc_ensemble_avg = 0.0
+for t in firmodel_acc_ensemble:
+    firmodel_acc_ensemble_avg += t[1]
+firmodel_acc_ensemble_avg = firmodel_acc_ensemble_avg * 1.0 / total_devices
 
+
+# Get final results for device_acc
 device_acc = np.array(device_acc, dtype=[('device', int), ('acc', float)])
 device_acc = np.flip(np.sort(device_acc, order='acc'))
 order = []
 for t in device_acc:
     order.append(t[0])
-    #print t[1]
+
+# Get average for device_acc
+device_acc_avg = 0.0
+for t in device_acc:
+    device_acc_avg += t[1]
+device_acc_avg = device_acc_avg * 1.0 / total_devices
 
 
+# Get final results for device_acc_ensemble
+tmp = []
+for n in order:
+    for t in device_acc_ensemble:
+        if t[0] == n:
+            tmp.append(t)
+device_acc_ensemble = tmp
 
-#for t in firmodel_acc_ensemble:
-#    print t[1]
-#print m
+# Get average for device_acc_ensemble
+device_acc_ensemble_avg = 0.0
+for t in device_acc_ensemble:
+    device_acc_ensemble_avg += t[1]
+device_acc_ensemble_avg = device_acc_ensemble_avg * 1.0 / total_devices
 
-#print 'Per FIR ex:\n',  firmodel_acc, '\n'
-#print 'Per FIR accuracies ensemble:\n', firmodel_acc_ensemble, '\n'
-#print 'Per device accuries:\n', device_acc, '\n'
-#print 'Per device accuracies ensemble:\n', device_acc_ensemble, '\n'
 
+print 'FIR Argmax per example:\n',  firmodel_acc
+print 'FIR Argmax per example avg: ', firmodel_acc_avg, '\n'
+
+print 'FIR Argmax per dataset:\n', firmodel_acc_ensemble
+print 'FIR Argmax per dataset avg: ', firmodel_acc_ensemble_avg, '\n'
+
+print 'Device Argmax per example:\n', device_acc
+print 'Device Argmax per example avg: ', device_acc_avg, '\n'
+
+print 'Device Argmax per dataset:\n', device_acc_ensemble
+print 'Device Argmax per dataset avg: ', device_acc_ensemble_avg, '\n'

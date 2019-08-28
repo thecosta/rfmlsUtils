@@ -129,10 +129,10 @@ def create_save_stats(label_path):
         pickle.dump(stats, handle, protocol=pickle.HIGHEST_PROTOCOL)
 
 
-path = '/scratch/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
-dest_root = '/scratch/bruno/RFMLS/dec18_darpa/v3_list/raw_samples/1Cv2/wifi/'
-train_tsv = '/scratch/RFMLS/RFML_Test_Specs_Delivered_v3/test1/1Cv2.train.tsv'
-test_tsv = '/scratch/RFMLS/RFML_Test_Specs_Delivered_v3/test1/1Cv2.test.tsv' 
+path = '/scratch/RFMLS/dec18_darpa/v3_list/raw_samples/1Av2/wifi/'
+dest_root = '/scratch/bruno/RFMLS/dec18_darpa/v3_list/raw_samples/1Av2/wifi/'
+train_tsv = '/scratch/RFMLS/RFML_Test_Specs_Delivered_v3/test1/1Av2.train.tsv'
+test_tsv = '/scratch/RFMLS/RFML_Test_Specs_Delivered_v3/test1/1Av2.test.tsv' 
 train_examples = []
 test_examples = []
 
@@ -249,4 +249,4 @@ for i in tqdm(range(50)):
         pickle.dump(new_partition, f) 
 
     #create_save_stats(dest)
-    #shutil.copy(path+'stats.pkl', dest+'stats.pkl')
+    shutil.copy(path+'stats.pkl', dest+'stats.pkl')
